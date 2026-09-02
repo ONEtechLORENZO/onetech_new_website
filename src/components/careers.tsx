@@ -2,6 +2,7 @@ import BlurText from "@/components/blur-text";
 import CareersMedia from "@/components/careers-media";
 import Reveal from "@/components/reveal";
 import SiteHeader from "@/components/site-header";
+import { withBasePath } from "@/lib/base-path";
 
 /* ── content ───────────────────────────────────────────────────────
  * Items marked "Add …" are placeholders awaiting real One Tech copy.
@@ -45,7 +46,7 @@ const STATEMENT = [
 
 function Cta({ label = "Candidati" }: { label?: string }) {
   return (
-    <a className="careers__cta" href="/careers/apply">
+    <a className="careers__cta" href={withBasePath("/careers/apply")}>
       {label} <span aria-hidden="true">↗</span>
     </a>
   );
@@ -90,7 +91,7 @@ export default function Careers() {
                 <h3>{card.title}</h3>
                 <div className="growth__photo">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={card.image} alt="" loading="lazy" />
+                  <img src={withBasePath(card.image)} alt="" loading="lazy" />
                 </div>
                 <p>{card.body}</p>
                 <p className="growth__strong">{card.strong}</p>
@@ -121,7 +122,7 @@ export default function Careers() {
                 <h3>{card.title}</h3>
                 <div className="growth__photo">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={card.image} alt="" loading="lazy" />
+                  <img src={withBasePath(card.image)} alt="" loading="lazy" />
                 </div>
                 <p>{card.body}</p>
                 <p className="growth__strong">{card.strong}</p>
@@ -135,7 +136,11 @@ export default function Careers() {
         <div className="retreat__inner">
           <Reveal className="retreat__side">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img className="retreat__logo" src="/otech-travel.webp" alt="" />
+            <img
+              className="retreat__logo"
+              src={withBasePath("/otech-travel.webp")}
+              alt=""
+            />
             <p className="retreat__tag">
               Partiamo insieme.
               <br />
@@ -146,8 +151,8 @@ export default function Careers() {
           <Reveal delay={140}>
             <div className="retreat__card">
               <video
-                src="/retreat.mp4"
-                poster="/retreat-poster.jpg"
+                src={withBasePath("/retreat.mp4")}
+                poster={withBasePath("/retreat-poster.jpg")}
                 autoPlay
                 muted
                 loop

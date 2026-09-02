@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { withBasePath } from "@/lib/base-path";
 
 type Spot = {
   src: string;
@@ -115,7 +116,7 @@ export default function Tools() {
               className={`lib__tile${spot.invert ? " lib__tile--invert" : ""}`}
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={spot.src} alt="" loading="lazy" />
+              <img src={withBasePath(spot.src)} alt="" loading="lazy" />
             </span>
           </span>
         ))}

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { withBasePath } from "@/lib/base-path";
 
 type Interview = {
   video?: string;
@@ -73,14 +74,14 @@ export default function Interviews() {
                     rel="noopener noreferrer"
                   >
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img className="itv__post" src={interview.image} alt="" />
+                    <img className="itv__post" src={withBasePath(interview.image)} alt="" />
                     <span className="itv__more">
                       See more <span aria-hidden="true">↗</span>
                     </span>
                   </a>
                 ) : (
                   /* eslint-disable-next-line @next/next/no-img-element */
-                  <img className="itv__post" src={interview.image} alt="" />
+                  <img className="itv__post" src={withBasePath(interview.image)} alt="" />
                 )
               ) : (
                 <>
@@ -88,8 +89,8 @@ export default function Interviews() {
                     ref={(node) => {
                       videos.current[i] = node;
                     }}
-                    src={interview.video}
-                    poster={interview.poster}
+                    src={interview.video ? withBasePath(interview.video) : undefined}
+                    poster={interview.poster ? withBasePath(interview.poster) : undefined}
                     muted
                     loop
                     playsInline

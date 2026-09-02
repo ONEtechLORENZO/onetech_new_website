@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { withBasePath } from "@/lib/base-path";
 
 type Slide = {
   caption: string;
@@ -88,8 +89,8 @@ export default function CareersMedia() {
                 ref={(node) => {
                   videos.current[i] = node;
                 }}
-                src={slide.video}
-                poster={slide.poster}
+                src={withBasePath(slide.video)}
+                poster={withBasePath(slide.poster)}
                 autoPlay
                 muted
                 loop

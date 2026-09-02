@@ -1,5 +1,6 @@
 import BannerVideo from "@/components/banner-video";
 import ComingSoonCta from "@/components/coming-soon";
+import { withBasePath } from "@/lib/base-path";
 
 type Cta = {
   label: string;
@@ -132,10 +133,13 @@ export default function Products() {
           >
             {banner.image ? (
               /* eslint-disable-next-line @next/next/no-img-element */
-              <img className="koreb__video" src={banner.image} alt="" />
+              <img className="koreb__video" src={withBasePath(banner.image)} alt="" />
             ) : (
               banner.video && (
-                <BannerVideo src={banner.video} poster={banner.poster} />
+                <BannerVideo
+                  src={withBasePath(banner.video)}
+                  poster={banner.poster ? withBasePath(banner.poster) : undefined}
+                />
               )
             )}
 
@@ -146,7 +150,7 @@ export default function Products() {
                   className={`koreb__logo${
                     banner.logoOriginal ? " koreb__logo--original" : ""
                   }`}
-                  src={banner.logo}
+                  src={withBasePath(banner.logo)}
                   alt={banner.name}
                   style={
                     banner.logoScale
@@ -204,8 +208,8 @@ export default function Products() {
                 </div>
               ) : banner.comingSoon ? (
                 <ComingSoonCta
-                  logo="/luvo-logo.png?v=2"
-                  art="/luvo-coming-soon.webp"
+                  logo={withBasePath("/luvo-logo.png?v=2")}
+                  art={withBasePath("/luvo-coming-soon.webp")}
                 />
               ) : (
                 <a

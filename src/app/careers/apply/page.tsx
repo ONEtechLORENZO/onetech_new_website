@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import ApplyForm from "@/components/apply-form";
 import SiteHeader from "@/components/site-header";
+import { withBasePath } from "@/lib/base-path";
 
 export const metadata: Metadata = {
   title: "Candidati — One Tech",
@@ -15,7 +16,7 @@ export default function ApplyPage() {
 
         <div className="apply__inner">
           <aside className="apply__side">
-            <a className="apply__back" href="/careers">
+            <a className="apply__back" href={withBasePath("/careers")}>
               <span aria-hidden="true">←</span> Torna a Careers
             </a>
 

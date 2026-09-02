@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { withBasePath } from "@/lib/base-path";
 
 /* Logo e tagline scendono da dietro la riga quando il footer entra in vista. */
 export default function FooterBrand() {
@@ -36,7 +37,7 @@ export default function FooterBrand() {
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           className="foot__brandLogo"
-          src="/footer-lockup.png"
+          src={withBasePath("/footer-lockup.png")}
           alt="onetech — Difficile? Non per noi!"
         />
       </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { withBasePath } from "@/lib/base-path";
 
 type Tile = {
   name: string;
@@ -271,8 +272,8 @@ export default function Hero() {
                 <>
                   <video
                     className="hero__cardMedia"
-                    src={tile.video}
-                    poster={tile.poster}
+                    src={withBasePath(tile.video)}
+                    poster={tile.poster ? withBasePath(tile.poster) : undefined}
                     muted
                     loop
                     playsInline
@@ -306,7 +307,7 @@ export default function Hero() {
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     className={`hero__cardLogo${tile.logoInvert ? " hero__cardLogo--invert" : ""}`}
-                    src={tile.logo}
+                    src={withBasePath(tile.logo)}
                     alt=""
                   />
                   {tile.sub && (

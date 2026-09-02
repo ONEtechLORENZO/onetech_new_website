@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { withBasePath } from "@/lib/base-path";
 
 const NAV = [
   { label: "Home", href: "/#" },
@@ -35,21 +36,21 @@ export default function SiteHeader({
 
   return (
     <header className="site-header">
-      <a className="site-header__logo" href="/#" aria-label="One Tech">
+      <a className="site-header__logo" href={withBasePath("/#")} aria-label="One Tech">
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/o-color.svg" alt="" />
+        <img src={withBasePath("/o-color.svg")} alt="" />
       </a>
 
       <nav className="site-header__nav">
         {NAV.map((item) => (
-          <a key={item.label} href={item.href}>
+          <a key={item.label} href={withBasePath(item.href)}>
             {item.label}
           </a>
         ))}
       </nav>
 
       <div className="site-header__end">
-        <a className="pill" href={ctaHref}>
+        <a className="pill" href={withBasePath(ctaHref)}>
           {ctaLabel}
         </a>
         <button
@@ -72,13 +73,17 @@ export default function SiteHeader({
         aria-hidden={!open}
       >
         {NAV.map((item) => (
-          <a key={item.label} href={item.href} onClick={() => setOpen(false)}>
+          <a
+            key={item.label}
+            href={withBasePath(item.href)}
+            onClick={() => setOpen(false)}
+          >
             {item.label}
           </a>
         ))}
         <a
           className="pill site-header__sheetCta"
-          href={ctaHref}
+          href={withBasePath(ctaHref)}
           onClick={() => setOpen(false)}
         >
           {ctaLabel}

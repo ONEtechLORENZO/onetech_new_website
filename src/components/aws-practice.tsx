@@ -1,4 +1,5 @@
 import Reveal from "@/components/reveal";
+import { withBasePath } from "@/lib/base-path";
 
 /*
  * AWS practice section for the APN application. Add the specific AWS
@@ -20,13 +21,13 @@ export default function AwsPractice() {
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 className="awsp__awsLogoLayer awsp__awsLogoLayer--word"
-                src="/aws.webp"
+                src={withBasePath("/aws.webp")}
                 alt=""
               />
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 className="awsp__awsLogoLayer awsp__awsLogoLayer--smile"
-                src="/aws.webp"
+                src={withBasePath("/aws.webp")}
                 alt=""
               />
             </span>
@@ -50,7 +51,7 @@ export default function AwsPractice() {
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               className="awsp__logo awsp__logo--wide"
-              src="/elevenlabs-logo.webp"
+              src={withBasePath("/elevenlabs-logo.webp")}
               alt="ElevenLabs"
             />
           </Reveal>
