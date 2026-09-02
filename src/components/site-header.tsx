@@ -3,11 +3,12 @@
 import { useEffect, useState } from "react";
 
 const NAV = [
-  { label: "Home", href: "/" },
+  { label: "Home", href: "/#" },
   { label: "Chi siamo", href: "/#chi-siamo" },
   { label: "Prodotti", href: "/#prodotti" },
   { label: "News e Blog", href: "/#news" },
   { label: "Contatti", href: "/#contatti" },
+  { label: "Privacy Policy", href: "/privacy" },
 ];
 
 export default function SiteHeader({
@@ -35,7 +36,7 @@ export default function SiteHeader({
 
   return (
     <header className="site-header">
-      <a className="site-header__logo" href="/" aria-label="One Tech">
+      <a className="site-header__logo" href="/#" aria-label="One Tech">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src="/o-color.svg" alt="" />
       </a>
