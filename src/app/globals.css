@@ -1,26 +1,2255 @@
 @import "tailwindcss";
 
+/* ── One Tech — light theme tokens ─────────────────────────────── */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg: #ffffff;
+  --fg: #0a0a0a;
+  --muted: #6b7280;
+  --accent: #7c3aed;
+  --line: rgba(10, 10, 10, 0.1);
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-background: var(--bg);
+  --color-foreground: var(--fg);
+  --color-accent: var(--accent);
+  --font-sans: var(--font-grotesk);
+  --font-serif: var(--font-serif-italic);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
+}
+
+/* anchored sections stop below the fixed header instead of under it */
+[id="chi-siamo"],
+[id="prodotti"],
+[id="news"],
+[id="contatti"] {
+  scroll-margin-top: clamp(56px, 6vh, 76px);
+}
+
+html,
+body {
+  max-width: 100%;
+  /* clip, not hidden — hidden creates a scroll container and kills
+     position: sticky for every descendant (the pinned tools stage) */
+  overflow-x: clip;
+}
+
+a,
+button {
+  -webkit-tap-highlight-color: transparent;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-grotesk), ui-sans-serif, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Header ────────────────────────────────────────────────────── */
+.site-header {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: clamp(10px, 1.2vw, 16px) clamp(18px, 3.2vw, 60px);
+  /* glossy frosted glass: translucent white, heavy blur with a saturation
+     lift, and a bright inset highlight along the top edge */
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.72),
+    rgba(255, 255, 255, 0.5)
+  );
+  backdrop-filter: blur(22px) saturate(1.7);
+  -webkit-backdrop-filter: blur(22px) saturate(1.7);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.45);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.95),
+    0 10px 30px -22px rgba(10, 10, 10, 0.35);
+}
+
+.site-header__logo img {
+  height: clamp(30px, 2.4vw, 40px);
+  width: auto;
+  display: block;
+}
+
+.site-header__nav {
+  display: flex;
+  gap: clamp(18px, 2.6vw, 44px);
+}
+
+.site-header__nav a {
+  font-size: clamp(0.92rem, 1vw, 1.05rem);
+  font-weight: 500;
+  color: var(--fg);
+  text-decoration: none;
+}
+
+.site-header__nav a:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.site-header__end {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* burger only exists on small screens */
+.site-header__burger {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  width: 42px;
+  height: 42px;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  cursor: pointer;
+}
+
+.site-header__burger span {
+  display: block;
+  width: 20px;
+  height: 2px;
+  border-radius: 1px;
+  background: var(--fg);
+  transition:
+    transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.2s ease;
+}
+
+.site-header__burger.is-open span:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+
+.site-header__burger.is-open span:nth-child(2) {
+  opacity: 0;
+}
+
+.site-header__burger.is-open span:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+/* dropdown sheet under the glass bar */
+.site-header__sheet {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  display: none;
+  flex-direction: column;
+  padding: 6px 22px 24px;
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.92),
+    rgba(255, 255, 255, 0.82)
+  );
+  backdrop-filter: blur(22px) saturate(1.7);
+  -webkit-backdrop-filter: blur(22px) saturate(1.7);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.45);
+  box-shadow: 0 26px 44px -32px rgba(10, 10, 10, 0.45);
+  opacity: 0;
+  transform: translateY(-10px);
+  pointer-events: none;
+  transition:
+    opacity 0.25s ease,
+    transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.site-header__sheet a:not(.pill) {
+  padding: 13px 2px;
+  font-size: 1.06rem;
+  font-weight: 500;
+  color: var(--fg);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(10, 10, 10, 0.07);
+}
+
+.site-header__sheet a:last-of-type:not(.pill) {
+  border-bottom: 0;
+}
+
+.site-header__sheetCta {
+  margin-top: 14px;
+  align-self: flex-start;
+}
+
+.site-header__sheet.is-open {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+
+@media (max-width: 800px) {
+  .site-header__nav {
+    display: none;
+  }
+  .site-header__burger {
+    display: inline-flex;
+  }
+  .site-header__sheet {
+    display: flex;
+  }
+}
+
+.pill {
+  background: var(--fg);
+  color: #fff;
+  border-radius: 999px;
+  padding: clamp(10px, 1vw, 13px) clamp(16px, 1.5vw, 24px);
+  font-size: clamp(13px, 0.95vw, 15px);
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  text-decoration: none;
+  white-space: nowrap;
+  transition:
+    transform 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.pill:hover {
+  transform: translateY(-1px);
+  opacity: 0.88;
+}
+
+/* ragged two-word orphans read cheap on narrow screens */
+.hero__title,
+.lib__title,
+.products__title,
+.itv__title,
+.careers__title,
+.careers__h2,
+.apply__title,
+.awsp__title,
+.retreat__tag {
+  text-wrap: balance;
+}
+
+/* ── Hero ──────────────────────────────────────────────────────── */
+.hero {
+  position: relative;
+  min-height: 100svh;
+  overflow: hidden;
+  background: var(--bg);
+  isolation: isolate;
+}
+
+.hero__copy {
+  position: relative;
+  z-index: 20;
+  padding: clamp(110px, 13vh, 170px) clamp(18px, 4vw, 48px) 0;
+  text-align: center;
+  pointer-events: none;
+}
+
+.hero__title {
+  margin: 0 auto;
+  max-width: min(94vw, 1500px);
+  font-size: clamp(1.9rem, 4.7vw, 5.7rem);
+  line-height: 0.94;
+  letter-spacing: -0.035em;
+  font-weight: 500;
+}
+
+.hero__title em {
+  font-family: var(--font-serif-italic), Georgia, serif;
+  font-style: italic;
+  font-weight: 400;
+  color: var(--accent);
+  letter-spacing: -0.015em;
+  padding-inline: 0.02em;
+}
+
+@media (min-width: 768px) {
+  /* lock the headline to exactly two lines on desktop */
+  .hero__line {
+    display: block;
+    white-space: nowrap;
+  }
+}
+
+/* small headline sitting just above the card row */
+.hero__rowLabel {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 47%;
+  z-index: 15;
+  margin: 0;
+  text-align: center;
+  font-size: clamp(0.8rem, 0.95vw, 1rem);
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+@media (max-width: 640px) {
+  .hero__rowLabel {
+    top: 39%;
+  }
+}
+
+/* ── 3D card row ───────────────────────────────────────────────── */
+.hero__stage {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 36%;
+  height: 72%;
+  z-index: 10;
+}
+
+.hero__track {
+  position: absolute;
+  inset: 0;
+  --card-w: 300px;
+  --card-h: 366px;
+}
+
+.hero__card {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  /* hidden until the carousel script has placed it — otherwise every card
+     paints stacked at the centre as one box before hydration */
+  visibility: hidden;
+  width: var(--card-w);
+  height: var(--card-h);
+  margin-top: calc(var(--card-h) / -2);
+  margin-left: calc(var(--card-w) / -2);
+  border-radius: clamp(16px, 1.7vw, 30px);
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  will-change: transform;
+  backface-visibility: hidden;
+  box-shadow:
+    inset 0 0 0 1px rgba(10, 10, 10, 0.07),
+    0 2px 6px rgba(10, 10, 10, 0.05),
+    0 30px 60px -28px rgba(10, 10, 10, 0.35);
+}
+
+.hero__cardName {
+  white-space: nowrap;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  padding-inline: 0.4em;
+  text-align: center;
+}
+
+.hero__cardMedia {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.hero__cardScrim {
+  position: absolute;
+  inset: 0;
+  /* centre-weighted so the wordmark stays legible over the footage */
+  background: radial-gradient(
+    ellipse 80% 55% at 50% 50%,
+    rgba(10, 10, 10, 0.7) 0%,
+    rgba(10, 10, 10, 0.5) 60%,
+    rgba(10, 10, 10, 0.34) 100%
+  );
+}
+
+.hero__card--media .hero__cardName {
+  position: relative;
+  z-index: 2;
+  text-shadow: 0 2px 18px rgba(0, 0, 0, 0.6);
+}
+
+.hero__cardLogo {
+  position: relative;
+  z-index: 2;
+  height: auto;
+  object-fit: contain;
+  display: block;
+}
+
+.hero__cardPlate {
+  position: relative;
+  z-index: 2;
+  display: inline-flex;
+}
+
+/* over video the logo carries its own shadow instead of a plate */
+.hero__card--media .hero__cardLogo {
+  filter: drop-shadow(0 2px 16px rgba(0, 0, 0, 0.55));
+}
+
+/* dark marks would vanish on the footage, so knock them out to white */
+.hero__card--media .hero__cardLogo--invert {
+  filter: brightness(0) invert(1)
+    drop-shadow(0 2px 16px rgba(0, 0, 0, 0.55));
+}
+
+/* on phones the headline ends high — lift the card row into the gap */
+@media (max-width: 640px) {
+  .hero__stage {
+    top: 22%;
+    height: 78%;
+  }
+}
+
+/* ── Tools cloud ───────────────────────────────────────────────── */
+.lib {
+  position: relative;
+  background: var(--bg);
+  /* tall wrapper: the stage pins while scroll reveals the text rows */
+  height: 280vh;
+}
+
+.lib__stage {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  /* the whole block — icons and text — sits a touch lower on screen */
+  transform: translateY(clamp(24px, 6vh, 72px));
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  padding: clamp(60px, 9vh, 110px) clamp(18px, 4vw, 48px);
+}
+
+.lib__copy {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+}
+
+.lib__kicker {
+  margin: 0 0 clamp(14px, 2.4vh, 26px);
+  font-size: clamp(1rem, 1.5vw, 1.6rem);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--fg);
+}
+
+.lib__title {
+  margin: 0;
+  font-size: clamp(1.5rem, 3.4vw, 4.2rem);
+  line-height: 1.05;
+  letter-spacing: -0.035em;
+  font-weight: 500;
+}
+
+.lib__title em {
+  font-family: var(--font-serif-italic), Georgia, serif;
+  font-style: italic;
+  font-weight: 400;
+  color: var(--accent);
+  letter-spacing: -0.015em;
+}
+
+/* lines fly in from below the screen edge, grey, then settle to ink;
+   the stage's overflow keeps them hidden until their turn */
+.lib__line {
+  display: block;
+  transform: translateY(64vh);
+  color: #b9b9b3;
+  transition:
+    transform 0.95s cubic-bezier(0.22, 1, 0.36, 1),
+    color 0.45s ease;
+}
+
+.lib__line.is-cur {
+  transform: none;
+}
+
+.lib__line.is-done {
+  color: var(--fg);
+}
+
+/* tiles rest at --tx/--ty from centre; they enter scattered from it */
+.lib__spot {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 1;
+  opacity: 0;
+  /* no scale here — a scaled ancestor makes Chrome rasterize the tile
+     layers tiny and the logos render blurry ever after */
+  transform: translate(-50%, -50%);
+  transition:
+    transform 1.05s cubic-bezier(0.22, 1, 0.36, 1) var(--d),
+    opacity 0.6s ease var(--d);
+}
+
+.lib__stage.is-in .lib__spot {
+  opacity: 1;
+  transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty)));
+}
+
+.lib__tile {
+  display: grid;
+  place-items: center;
+  width: var(--s);
+  height: var(--s);
+  background: var(--bg, #fff);
+  border: 1px solid rgba(10, 10, 10, 0.06);
+  border-radius: 24%;
+  box-shadow: 0 14px 34px -18px rgba(10, 10, 10, 0.3);
+  animation: lib-float var(--f) ease-in-out infinite;
+}
+
+.lib__tile img {
+  width: 68%;
+  height: 68%;
+  object-fit: contain;
+  display: block;
+}
+
+.lib__tile--invert img {
+  filter: brightness(0) invert(1);
+}
+
+@keyframes lib-float {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  33% {
+    transform: translate(5px, -13px);
+  }
+  66% {
+    transform: translate(-6px, -4px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lib {
+    height: auto;
+    min-height: 100svh;
+  }
+  .lib__spot,
+  .lib__line {
+    transition: none;
+  }
+  .lib__tile {
+    animation: none;
+  }
+}
+
+/* ── Story ─────────────────────────────────────────────────────── */
+.story {
+  background: var(--bg);
+  padding: clamp(80px, 12vh, 150px) clamp(18px, 4vw, 48px)
+    clamp(110px, 18vh, 220px);
+}
+
+.story__inner {
+  margin: 0 auto;
+  max-width: 1150px;
+}
+
+.story__p {
+  margin: 0 0 clamp(46px, 7vh, 96px);
+  font-size: clamp(1.6rem, 2.8vw, 3.35rem);
+  line-height: 1.3;
+  letter-spacing: -0.022em;
+  font-weight: 400;
+  color: var(--fg);
+}
+
+.story__p:last-child {
+  margin-bottom: 0;
+}
+
+.story__word {
+  display: inline-block;
+  opacity: 0.18;
+}
+
+/* ── Products ──────────────────────────────────────────────────── */
+.products {
+  background: var(--bg);
+  padding: clamp(70px, 10vh, 130px) clamp(18px, 3vw, 44px)
+    clamp(90px, 14vh, 170px);
+}
+
+.products__title {
+  margin: 0 0 clamp(40px, 6vh, 76px);
+  text-align: center;
+  font-size: clamp(2.4rem, 5vw, 5rem);
+  line-height: 1;
+  letter-spacing: -0.04em;
+  font-weight: 500;
+}
+
+.products__grid {
+  margin: 0 auto;
+  max-width: 1480px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(20px, 2.4vw, 40px);
+}
+
+@media (max-width: 860px) {
+  .products__grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.product {
+  --logo-h: clamp(26px, 2.1vw, 36px);
+  display: flex;
+  flex-direction: column;
+  min-height: clamp(420px, 44vw, 620px);
+  padding: clamp(22px, 2vw, 34px) clamp(22px, 2vw, 34px) 0;
+  border-radius: clamp(20px, 1.8vw, 30px);
+  overflow: hidden;
+}
+
+.product__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.product__logo {
+  height: var(--logo-h);
+  width: auto;
+  display: block;
+}
+
+.product__name {
+  font-size: calc(var(--logo-h) * 1.05);
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  line-height: 1;
+}
+
+.product__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.72);
+  color: var(--fg);
+  border-radius: 999px;
+  padding: clamp(9px, 0.9vw, 13px) clamp(14px, 1.2vw, 21px);
+  font-size: clamp(13px, 0.92vw, 15px);
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+
+.product__cta:hover {
+  background: #fff;
+  transform: translateY(-1px);
+}
+
+.product__points {
+  margin: clamp(20px, 2.4vh, 34px) 0 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(6px, 0.8vh, 11px);
+}
+
+.product__points li {
+  position: relative;
+  padding-left: 26px;
+  font-size: clamp(0.92rem, 1.02vw, 1.08rem);
+  line-height: 1.4;
+  color: rgba(10, 10, 10, 0.72);
+}
+
+.product__points li::before {
+  content: "";
+  position: absolute;
+  left: 4px;
+  top: 0.55em;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(10, 10, 10, 0.45);
+}
+
+.product__points li:first-child {
+  color: var(--fg);
+  font-weight: 600;
+}
+
+/* screenshot slot — drop an <img> or <video> in here per product */
+.product__media {
+  margin-top: auto;
+  aspect-ratio: 16 / 9;
+  border-radius: clamp(14px, 1.2vw, 20px) clamp(14px, 1.2vw, 20px) 0 0;
+  background: rgba(255, 255, 255, 0.55);
+  overflow: hidden;
+}
+
+.product__media video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* ── Kore banner ───────────────────────────────────────────────── */
+.koreb {
+  --koreb-logo-h: clamp(30px, 4vw, 76px);
+  margin: clamp(34px, 3.6vw, 60px) auto 0;
+  max-width: 1480px;
+}
+
+.koreb__kicker {
+  margin: 0 0 clamp(14px, 1.6vw, 24px);
+  font-size: clamp(1.2rem, 1.6vw, 1.8rem);
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  color: var(--fg);
+}
+
+/* the clip IS the card surface: backdrop and subject are baked into the
+   footage, with its left third left open for the copy */
+.koreb__card {
+  position: relative;
+  aspect-ratio: 1916 / 821;
+  border-radius: clamp(20px, 1.8vw, 34px);
+  overflow: hidden;
+}
+
+.koreb__video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.koreb__copy {
+  position: absolute;
+  z-index: 2;
+  top: 50%;
+  left: 4%;
+  width: 42%;
+  transform: translateY(-50%);
+  text-align: center;
+}
+
+.koreb__logo {
+  height: var(--koreb-logo-h);
+  width: auto;
+  display: block;
+  margin: 0 auto clamp(12px, 1.7vw, 30px);
+}
+
+/* text stand-in when a product has no logo art yet */
+.koreb__name {
+  display: block;
+  margin: 0 0 clamp(12px, 1.7vw, 30px);
+  font-size: calc(var(--koreb-logo-h) * 0.88);
+  line-height: 1;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--fg);
+}
+
+.koreb__body {
+  margin: 0 auto;
+  max-width: 48ch;
+  font-size: clamp(0.66rem, 0.92vw, 1.04rem);
+  line-height: 1.5;
+  color: var(--fg);
+}
+
+.koreb__body + .koreb__body {
+  margin-top: clamp(8px, 0.9vw, 14px);
+}
+
+.koreb__facts {
+  list-style: none;
+  margin: clamp(10px, 1.3vw, 22px) auto 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: clamp(0.64rem, 0.88vw, 0.98rem);
+  font-weight: 600;
+  color: var(--fg);
+}
+
+.koreb__cta {
+  margin-top: clamp(14px, 1.8vw, 28px);
+}
+
+.koreb__ctas {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: clamp(8px, 1vw, 14px);
+}
+
+.koreb__ctas .koreb__cta {
+  margin-top: 0;
+}
+
+.koreb__ctas {
+  margin-top: clamp(14px, 1.8vw, 28px);
+}
+
+.koreb__cta--primary {
+  background: var(--fg);
+  color: #fff;
+}
+
+.koreb__cta--primary:hover {
+  background: #000;
+}
+
+/* dark footage: knock the copy and the mark out to white */
+.koreb__card--dark .koreb__body,
+.koreb__card--dark .koreb__facts,
+.koreb__card--dark .koreb__name {
+  color: #fff;
+}
+
+.koreb__card--dark .koreb__logo {
+  filter: brightness(0) invert(1);
+}
+
+/* marks whose art is already tuned for the dark card keep their colours */
+.koreb__card--dark .koreb__logo.koreb__logo--original {
+  filter: none;
+}
+
+/* phones: the card stacks — copy on the sampled backdrop colour, then the
+   clip whole underneath rather than cropped to a sliver */
+@media (max-width: 860px) {
+  .koreb__card {
+    aspect-ratio: auto;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(20px, 4.5vw, 34px);
+    padding: clamp(24px, 5vw, 40px) clamp(20px, 5vw, 36px)
+      clamp(24px, 5vw, 36px);
+  }
+  .koreb__copy {
+    position: static;
+    width: 100%;
+    transform: none;
+  }
+  .koreb__video {
+    position: static;
+    height: auto;
+    aspect-ratio: 1916 / 821;
+    border-radius: clamp(10px, 2vw, 16px);
+  }
+  .koreb__body {
+    font-size: clamp(0.95rem, 3.4vw, 1.15rem);
+  }
+  .koreb__facts {
+    font-size: clamp(0.9rem, 3.2vw, 1.05rem);
+  }
+}
+
+/* ── Footer ────────────────────────────────────────────────────── */
+.foot {
+  background: #000;
+  color: #fff;
+  padding: clamp(56px, 8vh, 96px) 0 clamp(34px, 5vh, 64px);
+  overflow: hidden;
+}
+
+.foot__inner {
+  margin: 0 auto;
+  max-width: 1760px;
+  padding: 0 clamp(18px, 4.5vw, 86px);
+}
+
+.foot__cols {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(28px, 3vw, 56px);
+}
+
+@media (max-width: 900px) {
+  .foot__cols {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    row-gap: clamp(36px, 5vh, 56px);
+  }
+}
+
+.foot__head {
+  margin: 0 0 clamp(16px, 2vh, 26px);
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.foot__links {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(10px, 1.3vh, 15px);
+}
+
+.foot__links li,
+.foot__links a {
+  font-size: clamp(0.98rem, 1.08vw, 1.12rem);
+  color: #fff;
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+}
+
+.foot__links a:hover {
+  text-decoration: underline;
+}
+
+.foot__inq {
+  display: inline-block;
+  font-size: clamp(0.98rem, 1.08vw, 1.12rem);
+  color: #fff;
+  text-decoration: none;
+}
+
+.foot__inq:hover {
+  text-decoration: underline;
+}
+
+.foot__head--stack {
+  margin-top: clamp(30px, 4.5vh, 48px);
+}
+
+.foot__address {
+  margin: 0 0 clamp(12px, 1.5vh, 18px);
+  font-size: clamp(0.98rem, 1.08vw, 1.12rem);
+  line-height: 1.45;
+  color: #fff;
+  max-width: 32ch;
+}
+
+.foot__mail {
+  display: inline-block;
+  margin-top: clamp(4px, 0.8vh, 10px);
+  font-size: clamp(0.98rem, 1.08vw, 1.12rem);
+  color: rgba(255, 255, 255, 0.62);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.foot__mail:hover {
+  color: #fff;
+}
+
+.foot__rule {
+  margin: clamp(40px, 5.5vh, 72px) 0 clamp(26px, 3.6vh, 46px);
+  border: 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.foot__brandClip {
+  overflow: hidden;
+  text-align: center;
+}
+
+/* logo and tagline drop together from behind the rule */
+.foot__brand {
+  position: relative;
+  display: inline-block;
+  transform: translateY(-108%);
+  transition: transform 1.05s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.foot__brandClip.is-in .foot__brand {
+  transform: none;
+}
+
+.foot__brandLogo {
+  width: clamp(240px, 40vw, 740px);
+  height: auto;
+  display: block;
+}
+
+.foot__tagline {
+  opacity: 0;
+  transition: opacity 0.8s ease 0.55s;
+}
+
+.foot__brandClip.is-in .foot__tagline {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .foot__brand {
+    transform: none;
+    transition: none;
+  }
+}
+
+
+/* ── Reveal helper ─────────────────────────────────────────────── */
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition:
+    opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.reveal.is-in {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* ── Careers ───────────────────────────────────────────────────── */
+.careers {
+  --pad: clamp(18px, 4vw, 64px);
+  background: var(--bg);
+  color: var(--fg);
+}
+
+.careers__hero {
+  position: relative;
+  padding: clamp(110px, 16vh, 190px) 0 clamp(60px, 9vh, 110px);
+  overflow: hidden;
+  text-align: center;
+}
+
+.careers__title {
+  margin: 0 auto;
+  max-width: 20ch;
+  padding: 0 var(--pad);
+  font-size: clamp(2.4rem, 6.2vw, 7rem);
+  line-height: 1;
+  letter-spacing: -0.04em;
+  font-weight: 500;
+}
+
+.careers__title em {
+  font-family: var(--font-serif-italic), Georgia, serif;
+  font-style: italic;
+  font-weight: 400;
+  color: var(--accent);
+}
+
+.careers__lead {
+  margin: clamp(34px, 5vh, 64px) auto 0;
+  padding: 0 var(--pad);
+  max-width: 62ch;
+  text-align: center;
+  font-size: clamp(1.05rem, 1.45vw, 1.6rem);
+  line-height: 1.5;
+  color: rgba(10, 10, 10, 0.72);
+}
+
+.careers__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: clamp(26px, 3.4vh, 44px);
+  background: var(--fg);
+  color: #fff;
+  border-radius: 999px;
+  padding: clamp(13px, 1.2vw, 18px) clamp(22px, 1.9vw, 32px);
+  font-size: clamp(0.95rem, 1.05vw, 1.1rem);
+  font-weight: 600;
+  text-decoration: none;
+  transition:
+    transform 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.careers__cta:hover {
+  transform: translateY(-2px);
+  opacity: 0.88;
+}
+
+.careers__media {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: clamp(300px, 31vw, 590px);
+  margin-top: clamp(38px, 5.5vh, 74px);
+  padding: 0 clamp(6px, 0.6vw, 14px);
+}
+
+.careers__slide {
+  flex: 0 0 auto;
+  width: 24%;
+  height: 81%;
+  padding: 0 clamp(5px, 0.5vw, 11px);
+  box-sizing: border-box;
+  border: 0;
+  background: none;
+  opacity: 1;
+  transition:
+    width 0.85s cubic-bezier(0.22, 1, 0.36, 1),
+    height 0.85s cubic-bezier(0.22, 1, 0.36, 1),
+    padding 0.85s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.5s ease;
+}
+
+/* the centre slide is the big one — the others slide in and grow into it */
+.careers__slide--active {
+  width: 49.5%;
+  height: 100%;
+}
+
+.careers__slide--hidden {
+  width: 0;
+  padding: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.careers__slideArt {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: clamp(14px, 1.4vw, 26px);
+  overflow: hidden;
+}
+
+.careers__mediaCaption {
+  position: absolute;
+  left: clamp(14px, 1.4vw, 26px);
+  bottom: clamp(14px, 1.4vw, 26px);
+  font-size: clamp(0.85rem, 0.95vw, 1.05rem);
+  font-weight: 600;
+  color: #fff;
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.55);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .careers__slide {
+    transition: none;
+  }
+}
+
+/* phones: the centre clip carries the section — let it breathe */
+@media (max-width: 640px) {
+  .careers__media {
+    height: clamp(300px, 92vw, 400px);
+  }
+  .careers__slide {
+    width: 19%;
+  }
+  .careers__slide--active {
+    width: 66%;
+  }
+  .careers__slide--hidden {
+    width: 0;
+  }
+}
+
+.careers__heroCta {
+  margin-top: clamp(26px, 3.6vh, 50px);
+}
+
+.careers__section {
+  max-width: 1560px;
+  margin: 0 auto;
+  padding: clamp(60px, 9vh, 120px) var(--pad);
+}
+
+.careers__h2 {
+  margin: 0;
+  font-size: clamp(2rem, 4.4vw, 4.4rem);
+  line-height: 1;
+  letter-spacing: -0.04em;
+  font-weight: 500;
+}
+
+.careers__body {
+  margin: clamp(16px, 2.2vh, 28px) 0 0;
+  max-width: 56ch;
+  font-size: clamp(1rem, 1.25vw, 1.4rem);
+  line-height: 1.5;
+  color: rgba(10, 10, 10, 0.68);
+}
+
+.careers__statement {
+  background: #e5dcfe;
+  padding: clamp(80px, 14vh, 180px) var(--pad);
+}
+
+.careers__statementInner {
+  max-width: 1180px;
+  margin: 0 auto;
+  /* gap rather than margins — the reveal wrappers collapse margins away */
+  display: flex;
+  flex-direction: column;
+  gap: clamp(38px, 6vh, 78px);
+}
+
+.careers__statement p {
+  margin: 0;
+  font-size: clamp(1.4rem, 2.75vw, 3.2rem);
+  line-height: 1.26;
+  letter-spacing: -0.025em;
+  font-weight: 400;
+  color: var(--fg);
+}
+
+.careers__statement p:last-child {
+  margin-bottom: 0;
+}
+
+.blurword {
+  display: inline-block;
+  opacity: 0.18;
+}
+
+.careers__slideArt video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+
+/* ── Career growth ─────────────────────────────────────────────── */
+.growth {
+  background: #e5dcfe;
+  padding: clamp(80px, 12vh, 170px) var(--pad);
+}
+
+.growth__inner {
+  max-width: 1560px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1.15fr 1fr;
+  gap: clamp(24px, 3vw, 64px);
+  align-items: start;
+}
+
+.growth__col {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(22px, 2.6vw, 44px);
+}
+
+/* the right column starts lower, so the four cards stagger like bricks */
+.growth__col--right {
+  margin-top: clamp(40px, 5.5vw, 100px);
+}
+
+.growth__centre {
+  align-self: center;
+  text-align: center;
+  padding: clamp(20px, 4vh, 60px) clamp(4px, 1vw, 24px);
+}
+
+.growth__lead {
+  margin: clamp(18px, 2.6vh, 32px) auto 0;
+  max-width: 38ch;
+  font-size: clamp(1rem, 1.25vw, 1.4rem);
+  line-height: 1.5;
+  color: rgba(10, 10, 10, 0.72);
+}
+
+.growth__card {
+  background: #fff;
+  border-radius: clamp(20px, 1.9vw, 32px);
+  padding: clamp(22px, 2.1vw, 36px);
+  box-shadow: 0 18px 44px -30px rgba(10, 10, 10, 0.35);
+}
+
+.growth__card h3 {
+  margin: 0;
+  font-family: var(--font-serif-italic), Georgia, serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: clamp(1.4rem, 1.9vw, 2.2rem);
+  letter-spacing: -0.01em;
+}
+
+/* image slot — an <img> or <video> dropped here should object-fit: cover */
+.growth__photo {
+  aspect-ratio: 1 / 1;
+  margin: clamp(14px, 1.6vh, 22px) 0 clamp(16px, 2vh, 26px);
+  border-radius: clamp(14px, 1.3vw, 22px);
+  background: linear-gradient(150deg, #eceff1, #f8f5ef 55%, #e4ded2);
+  overflow: hidden;
+}
+
+.growth__card p {
+  margin: 0 0 12px;
+  font-size: clamp(0.95rem, 1.02vw, 1.08rem);
+  line-height: 1.5;
+  color: rgba(10, 10, 10, 0.62);
+}
+
+.growth__card .growth__strong {
+  margin-bottom: 0;
+  font-weight: 600;
+  color: var(--fg);
+}
+
+@media (max-width: 1000px) {
+  .growth__inner {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .growth__centre {
+    order: -1;
+    padding-top: 0;
+  }
+  .growth__col--right {
+    margin-top: 0;
+  }
+}
+
+.growth__photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* ── Pay and benefits ──────────────────────────────────────────── */
+.pay {
+  background: #f6f5f2;
+  padding: clamp(80px, 12vh, 160px) var(--pad);
+  text-align: center;
+}
+
+.pay__inner {
+  max-width: 1300px;
+  margin: 0 auto;
+}
+
+.pay__lead {
+  margin: clamp(18px, 2.6vh, 32px) auto 0;
+  max-width: 64ch;
+  font-size: clamp(1rem, 1.2vw, 1.35rem);
+  line-height: 1.5;
+  color: rgba(10, 10, 10, 0.68);
+}
+
+.pay__grid {
+  list-style: none;
+  padding: 0;
+  margin: 0 auto;
+  max-width: 1120px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(16px, 1.8vw, 30px);
+}
+
+@media (max-width: 640px) {
+  .pay__grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.pay__card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: #fff;
+  border-radius: clamp(20px, 1.9vw, 32px);
+  padding: clamp(30px, 3vw, 52px) clamp(20px, 2.2vw, 38px);
+  box-shadow: 0 18px 44px -34px rgba(10, 10, 10, 0.3);
+}
+
+.pay__card--accent {
+  background: #e5dcfe;
+}
+
+.pay__icon svg {
+  width: clamp(76px, 6.4vw, 116px);
+  height: auto;
+  display: block;
+  margin-bottom: clamp(16px, 2.2vh, 28px);
+  fill: none;
+  stroke: var(--fg);
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  animation: pay-float 5.5s ease-in-out infinite;
+}
+
+/* stagger the bob so the six icons don't move in lockstep */
+.pay__card:nth-child(2n) .pay__icon svg {
+  animation-delay: -1.8s;
+}
+
+.pay__card:nth-child(3n) .pay__icon svg {
+  animation-delay: -3.6s;
+}
+
+/* the dashed echo strokes flow continuously along their paths */
+.pay__icon svg [stroke-dasharray] {
+  animation: pay-dash 5s linear infinite;
+}
+
+@keyframes pay-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+@keyframes pay-dash {
+  to {
+    /* divisible by both dash periods (4+3 and 3+3) for a seamless loop */
+    stroke-dashoffset: -42;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pay__icon svg,
+  .pay__icon svg [stroke-dasharray] {
+    animation: none;
+  }
+}
+
+.pay__card h3 {
+  margin: 0 0 10px;
+  font-size: clamp(1.1rem, 1.35vw, 1.5rem);
+  font-weight: 400;
+  letter-spacing: -0.015em;
+}
+
+.pay__card p {
+  margin: 0;
+  max-width: 36ch;
+  font-size: clamp(0.92rem, 1vw, 1.06rem);
+  line-height: 1.5;
+  color: rgba(10, 10, 10, 0.6);
+}
+
+/* ── Apply ─────────────────────────────────────────────────────── */
+.apply {
+  background: var(--bg);
+  min-height: 100svh;
+}
+
+.apply__inner {
+  max-width: 1560px;
+  margin: 0 auto;
+  padding: clamp(120px, 16vh, 190px) clamp(18px, 4vw, 64px)
+    clamp(80px, 12vh, 150px);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+  gap: clamp(40px, 6vw, 120px);
+  align-items: start;
+}
+
+@media (max-width: 920px) {
+  .apply__inner {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* the intro column pins while the form scrolls */
+.apply__side {
+  position: sticky;
+  top: clamp(88px, 13vh, 140px);
+  align-self: start;
+}
+
+@media (max-width: 920px) {
+  .apply__side {
+    position: static;
+  }
+}
+
+.apply__back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--fg);
+  font-size: clamp(0.95rem, 1vw, 1.05rem);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.apply__title {
+  margin: clamp(36px, 6vh, 70px) 0 0;
+  font-size: clamp(2.1rem, 3.8vw, 4.4rem);
+  line-height: 1.02;
+  letter-spacing: -0.04em;
+  font-weight: 500;
+  max-width: 16ch;
+}
+
+.apply__title em {
+  font-family: var(--font-serif-italic), Georgia, serif;
+  font-style: italic;
+  font-weight: 400;
+  color: var(--accent);
+}
+
+.apply__meta {
+  margin: clamp(22px, 3.4vh, 40px) 0 0;
+  font-size: clamp(1rem, 1.15vw, 1.25rem);
+  color: rgba(10, 10, 10, 0.72);
+  max-width: 36ch;
+}
+
+.apply__metaStrong {
+  margin: 10px 0 0;
+  font-size: clamp(1rem, 1.15vw, 1.25rem);
+  font-weight: 600;
+}
+
+.apply__faq {
+  margin: clamp(34px, 5.5vh, 64px) 0 0;
+  font-size: clamp(0.98rem, 1.05vw, 1.12rem);
+  color: rgba(10, 10, 10, 0.72);
+}
+
+.apply__faq a {
+  color: var(--fg);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.apply__kicker {
+  margin: 0 0 4px;
+  font-size: 0.9rem;
+  color: rgba(10, 10, 10, 0.5);
+}
+
+.apply__formTitle {
+  margin: 0 0 clamp(24px, 3.6vh, 42px);
+  font-size: clamp(1.5rem, 1.9vw, 2.2rem);
+  letter-spacing: -0.02em;
+  font-weight: 500;
+}
+
+.apply__form {
+  display: flex;
+  flex-direction: column;
+}
+
+.apply__field {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  margin-bottom: clamp(20px, 2.8vh, 30px);
+}
+
+.apply__field > span {
+  font-size: clamp(0.95rem, 1vw, 1.05rem);
+  font-weight: 500;
+}
+
+.apply__field input,
+.apply__field select,
+.apply__field textarea {
+  appearance: none;
+  background: #fff;
+  border: 1px solid rgba(10, 10, 10, 0.16);
+  border-radius: 12px;
+  padding: 14px 16px;
+  font: inherit;
+  font-size: clamp(0.95rem, 1vw, 1.05rem);
+  color: var(--fg);
+  transition: border-color 0.15s ease;
+}
+
+.apply__field textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+.apply__field input::placeholder,
+.apply__field textarea::placeholder {
+  color: rgba(10, 10, 10, 0.35);
+}
+
+.apply__field input:focus,
+.apply__field select:focus,
+.apply__field textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.apply__field select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='m1 1 5 5 5-5' fill='none' stroke='%230a0a0a' stroke-width='1.6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+}
+
+.apply__field select:invalid {
+  color: rgba(10, 10, 10, 0.35);
+}
+
+/* the native dropdown list inherits the select's placeholder grey on
+   Windows — force full ink on the options themselves */
+.apply__field select option {
+  color: var(--fg);
+}
+
+.apply__field select option:disabled {
+  color: rgba(10, 10, 10, 0.35);
+}
+
+.apply__levels {
+  border: 0;
+  padding: 0;
+  margin: 0 0 clamp(20px, 2.8vh, 30px);
+}
+
+.apply__levels legend {
+  padding: 0;
+  margin-bottom: 9px;
+  font-size: clamp(0.95rem, 1vw, 1.05rem);
+  font-weight: 500;
+}
+
+.apply__levels div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.apply__pill input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.apply__pill span {
+  display: inline-block;
+  border: 1px solid rgba(10, 10, 10, 0.18);
+  border-radius: 999px;
+  padding: 10px 18px;
+  font-size: clamp(0.9rem, 0.98vw, 1rem);
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.apply__pill input:checked + span {
+  background: var(--fg);
+  border-color: var(--fg);
+  color: #fff;
+}
+
+.apply__pill input:focus-visible + span {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.apply__drop {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  background: #fff;
+  border: 1.5px dashed rgba(10, 10, 10, 0.28);
+  border-radius: 14px;
+  padding: clamp(26px, 3.4vh, 40px) 20px;
+  font: inherit;
+  cursor: pointer;
+  text-align: center;
+  transition:
+    border-color 0.15s ease,
+    background 0.15s ease;
+}
+
+.apply__drop.is-over,
+.apply__drop:hover {
+  border-color: var(--accent);
+  background: #faf8ff;
+}
+
+.apply__drop.has-file {
+  border-style: solid;
+  border-color: var(--accent);
+}
+
+.apply__drop strong {
+  font-weight: 600;
+}
+
+.apply__drop span {
+  font-size: 0.92rem;
+  color: rgba(10, 10, 10, 0.55);
+}
+
+.apply__dropHint {
+  font-size: 0.85rem;
+}
+
+.apply__error {
+  margin: 8px 0 0;
+  font-size: 0.92rem;
+  color: #c62828;
+}
+
+.apply__consent {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  margin: clamp(6px, 1vh, 12px) 0 clamp(24px, 3.4vh, 38px);
+  font-size: clamp(0.9rem, 0.98vw, 1rem);
+  line-height: 1.5;
+  color: rgba(10, 10, 10, 0.72);
+  cursor: pointer;
+}
+
+.apply__consent input {
+  margin-top: 4px;
+  width: 17px;
+  height: 17px;
+  flex: 0 0 17px;
+  accent-color: var(--accent);
+}
+
+.apply__submit {
+  align-self: flex-start;
+  border: 0;
+  background: var(--fg);
+  color: #fff;
+  border-radius: 999px;
+  padding: clamp(14px, 1.3vw, 18px) clamp(28px, 2.6vw, 44px);
+  font: inherit;
+  font-size: clamp(0.98rem, 1.05vw, 1.1rem);
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
+}
+
+.apply__submit:hover:not(:disabled) {
+  transform: translateY(-2px);
+  opacity: 0.88;
+}
+
+.apply__submit:disabled {
+  background: rgba(10, 10, 10, 0.18);
+  cursor: not-allowed;
+}
+
+.apply__done {
+  align-self: center;
+  padding: clamp(30px, 4vh, 50px);
+  background: #f0fdf4;
+  border: 1px solid rgba(11, 143, 94, 0.25);
+  border-radius: 18px;
+}
+
+.apply__done h2 {
+  margin: 0 0 10px;
+  font-size: clamp(1.4rem, 1.8vw, 2rem);
+  font-weight: 500;
+}
+
+.apply__done p {
+  margin: 0;
+  color: rgba(10, 10, 10, 0.7);
+  max-width: 48ch;
+}
+
+.hero__cardBrand {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.hero__cardBrand .hero__cardLogo {
+  width: 100%;
+}
+
+/* the thin rule + wordline of the AWS Partner Network badge */
+.hero__cardSub {
+  width: 148%;
+  margin-top: calc(var(--card-w) * 0.055);
+  padding-top: calc(var(--card-w) * 0.05);
+  border-top: 1px solid color-mix(in srgb, currentColor 55%, transparent);
+  color: inherit;
+  font-size: calc(var(--card-w) * 0.064);
+  font-weight: 400;
+  letter-spacing: 0.005em;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.hero__cardNameWrap {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: calc(var(--card-w) * 0.028);
+}
+
+/* the small "Supported by" line of the ElevenLabs badge */
+.hero__cardKicker {
+  font-size: calc(var(--card-w) * 0.042);
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  opacity: 0.85;
+}
+
+/* the kicker sits above a logo mark rather than a wordmark */
+.hero__cardKicker--overLogo {
+  margin-bottom: calc(var(--card-w) * 0.04);
+}
+
+.hero__card--media .hero__cardKicker {
+  text-shadow: 0 2px 18px rgba(0, 0, 0, 0.6);
+}
+
+
+/* ── Interviste ────────────────────────────────────────────────── */
+.itv {
+  background: #000;
+  color: #fff;
+  padding: clamp(70px, 11vh, 150px) 0 clamp(80px, 12vh, 160px);
+  overflow: hidden;
+}
+
+.itv__title {
+  margin: 0 0 clamp(40px, 6vh, 76px);
+  text-align: center;
+  font-size: clamp(2.4rem, 5vw, 5rem);
+  line-height: 1;
+  letter-spacing: -0.04em;
+  font-weight: 500;
+  color: #fff;
+}
+
+.itv__track {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.itv__track {
+  height: clamp(240px, 37vw, 700px);
+}
+
+.itv__slide {
+  position: relative;
+  flex: 0 0 auto;
+  margin: 0 clamp(7px, 0.9vw, 16px);
+  border-radius: clamp(14px, 1.4vw, 26px);
+  overflow: hidden;
+  transition:
+    width 0.85s cubic-bezier(0.22, 1, 0.36, 1),
+    height 0.85s cubic-bezier(0.22, 1, 0.36, 1),
+    margin 0.85s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.45s ease;
+}
+
+/* post slides: square artwork on white — the slide becomes a white card
+   with the post centred inside */
+.itv__postLink {
+  position: absolute;
+  inset: 0;
+  display: block;
+}
+
+.itv__post {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: #fff;
+  display: block;
+}
+
+.itv__slide video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* wide centre stage; the sides overflow past the screen edges */
+.itv__slide--active {
+  width: clamp(320px, 66vw, 1240px);
+  height: 100%;
+}
+
+.itv__slide--side {
+  width: clamp(120px, 24vw, 440px);
+  height: 92%;
+  cursor: pointer;
+}
+
+.itv__slide--hidden {
+  width: 0;
+  margin: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.itv__more {
+  position: absolute;
+  right: clamp(14px, 1.6vw, 30px);
+  bottom: clamp(12px, 1.5vw, 26px);
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: 999px;
+  padding: clamp(9px, 0.9vw, 13px) clamp(16px, 1.5vw, 24px);
+  background: rgba(20, 20, 20, 0.62);
+  color: #fff;
+  font-size: clamp(0.9rem, 1vw, 1.1rem);
+  font-weight: 600;
+  text-decoration: none;
+  backdrop-filter: blur(6px);
+  transition: background 0.2s ease;
+}
+
+.itv__more:hover {
+  background: rgba(20, 20, 20, 0.88);
+}
+
+.itv__nav {
+  margin-top: clamp(30px, 4.5vh, 56px);
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+}
+
+.itv__arrow {
+  width: clamp(44px, 3.4vw, 56px);
+  height: clamp(44px, 3.4vw, 56px);
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  background: transparent;
+  color: #fff;
+  font-size: clamp(1.05rem, 1.2vw, 1.35rem);
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.itv__arrow:hover {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.55);
+}
+
+/* ── Yearly retreat ────────────────────────────────────────────── */
+.retreat {
+  background: #f6f5f2; /* matches the Retribuzione e benefit band */
+  padding: clamp(70px, 10vh, 140px) var(--pad) clamp(80px, 12vh, 160px);
+}
+
+.retreat__inner {
+  max-width: 1560px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2.4fr);
+  gap: clamp(28px, 4vw, 80px);
+  align-items: center;
+}
+
+@media (max-width: 900px) {
+  .retreat__inner {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.retreat__side {
+  text-align: center;
+}
+
+.retreat__logo {
+  width: clamp(130px, 14vw, 230px);
+  height: auto;
+  display: block;
+  margin: 0 auto clamp(18px, 3vh, 34px);
+}
+
+.retreat__tag {
+  margin: 0;
+  font-size: clamp(1.15rem, 1.6vw, 1.8rem);
+  line-height: 1.4;
+  font-weight: 500;
+  letter-spacing: -0.015em;
+}
+
+.retreat__card {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  border-radius: clamp(22px, 2.4vw, 44px);
+  overflow: hidden;
+  background: #000;
+}
+
+.retreat__card video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* dark falloff so the title reads over any frame */
+.retreat__card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0) 45%, rgba(0, 0, 0, 0.65));
+}
+
+.retreat__title {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: clamp(20px, 3vw, 54px);
+  z-index: 2;
+  margin: 0;
+  text-align: center;
+  color: #fff;
+  font-size: clamp(1.5rem, 2.8vw, 3.2rem);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+}
+
+.retreat__title em {
+  font-family: var(--font-serif-italic), Georgia, serif;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+
+.retreat__cta {
+  margin-top: clamp(30px, 5vh, 60px);
+  text-align: center;
+}
+
+/* ── AWS practice ──────────────────────────────────────────────── */
+.awsp {
+  background: var(--bg);
+  padding: clamp(70px, 10vh, 130px) clamp(18px, 4vw, 48px);
+  text-align: center;
+}
+
+.awsp__cols {
+  max-width: 1480px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(40px, 5vw, 96px);
+  align-items: start;
+}
+
+@media (max-width: 800px) {
+  .awsp__cols {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: clamp(56px, 9vw, 80px);
+  }
+}
+
+.awsp__inner {
+  max-width: 620px;
+  margin: 0 auto;
+}
+
+/* wordmark logos are wide, not square — match their visual weight */
+.awsp__logo.awsp__logo--wide {
+  width: clamp(200px, 19vw, 300px);
+  margin-top: clamp(14px, 2vw, 30px);
+}
+
+.awsp__logo {
+  width: clamp(64px, 6vw, 96px);
+  height: auto;
+  display: block;
+  margin: 0 auto clamp(18px, 2.6vh, 30px);
+}
+
+.awsp__title {
+  margin: 0 0 clamp(14px, 2vh, 24px);
+  font-size: clamp(1.5rem, 2.6vw, 2.8rem);
+  letter-spacing: -0.03em;
+  font-weight: 500;
+}
+
+.awsp__body {
+  margin: 0 auto;
+  max-width: 64ch;
+  font-size: clamp(1rem, 1.2vw, 1.3rem);
+  line-height: 1.55;
+  color: rgba(10, 10, 10, 0.72);
+}
+
+/* iOS zooms any focused control under 16px — pin them at 16 on phones
+   (kept last so it outranks the clamp() base rule above) */
+@media (max-width: 640px) {
+  .apply__field input,
+  .apply__field select,
+  .apply__field textarea {
+    font-size: 16px;
+  }
+}
+
+/* ── Coming soon card ──────────────────────────────────────────── */
+.csoon {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  /* the banner card acts as the containing block, so the scrim takes its
+     shape — matching its radius keeps the darkened area's corners curvy */
+  border-radius: clamp(20px, 1.8vw, 34px);
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(10, 10, 10, 0.45);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  animation: csoon-fade 0.25s ease;
+}
+
+/* the card wears the artwork's own beige so the two read as one piece */
+.csoon__card {
+  position: relative;
+  width: min(92vw, 430px);
+  padding: clamp(24px, 5vw, 36px) clamp(22px, 4.5vw, 32px)
+    clamp(26px, 5vw, 38px);
+  border-radius: 24px;
+  background: #e3e0d9;
+  box-shadow: 0 40px 90px -30px rgba(10, 10, 10, 0.6);
+  text-align: center;
+  animation: csoon-pop 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.csoon__close {
+  position: absolute;
+  top: 10px;
+  right: 14px;
+  border: 0;
+  background: transparent;
+  font-size: 30px;
+  line-height: 1;
+  color: rgba(10, 10, 10, 0.55);
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.csoon__close:hover {
+  color: var(--fg);
+}
+
+.csoon__logo {
+  width: clamp(120px, 34%, 150px);
+  height: auto;
+  display: block;
+  margin: 6px auto 18px;
+}
+
+.csoon__art {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 14px;
+}
+
+/* letters rise in one by one, then the whole line keeps breathing */
+.csoon__text {
+  margin: 20px 0 0;
+  font-size: clamp(1.35rem, 5.6vw, 1.7rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--fg);
+}
+
+.csoon__text span {
+  display: inline-block;
+  white-space: pre;
+  opacity: 0;
+  animation:
+    csoon-rise 0.5s cubic-bezier(0.22, 1, 0.36, 1) var(--d, 0s) forwards,
+    csoon-breathe 2.6s ease-in-out calc(var(--d, 0s) + 1.1s) infinite;
+}
+
+@keyframes csoon-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes csoon-pop {
+  from {
+    opacity: 0;
+    transform: translateY(22px) scale(0.96);
+  }
+}
+
+@keyframes csoon-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes csoon-breathe {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .csoon,
+  .csoon__card {
+    animation: none;
+  }
+  .csoon__text span {
+    opacity: 1;
+    animation: none;
+  }
 }
