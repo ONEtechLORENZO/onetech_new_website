@@ -1,0 +1,6 @@
+:HL["/onetech_new_website/_next/static/chunks/004tzj_qwjqss.css","style"]
+:HL["/onetech_new_website/_next/static/media/31a9145ccb84606d-s.p.3j3x29wbycqkn.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
+:HL["/onetech_new_website/_next/static/media/7ebf22b5a21034f8-s.p.3j3877k49yy0l.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
+:HL["/onetech_new_website/_next/static/media/e41d5df559864f9e-s.p.1g73gv09-xcb6.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
+:HL["/onetech_new_website/otech-travel.webp","image"]
+0:{"tree":{"name":"","param":null,"prefetchHints":4176,"slots":{"children":{"name":"careers","param":null,"prefetchHints":4192,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":4256,"slots":null}}}}},"staleTime":300,"buildId":"Dd-1rSbWlQFbibgZWZcXQ"}
