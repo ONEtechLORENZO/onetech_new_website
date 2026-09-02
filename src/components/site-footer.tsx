@@ -10,8 +10,6 @@ const PRODUCTS = [
 const FOLLOW = [
   { label: "LinkedIn", href: "https://www.linkedin.com/company/otech-one/" },
   { label: "Instagram", href: "https://www.instagram.com/onetech.one" },
-  { label: "Facebook", href: "#" },
-  { label: "X", href: "#" },
   { label: "YouTube", href: "https://www.youtube.com/@Onetech22" },
 ];
 

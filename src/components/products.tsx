@@ -9,6 +9,7 @@ type Cta = {
 
 type Banner = {
   name: string;
+  anchor: string;
   /* logo art replaces the text name when present */
   logo?: string;
   href?: string;
@@ -37,7 +38,9 @@ type Banner = {
 const BANNERS: Banner[] = [
   {
     name: "KORE",
+    anchor: "kore",
     logo: "/kore.webp",
+    logoScale: 0.85,
     video: "/banner-kore.mp4?v=hq",
     poster: "/banner-kore-poster.webp?v=hq",
     tint: "#c5dcf9",
@@ -49,6 +52,7 @@ const BANNERS: Banner[] = [
   },
   {
     name: "ARGO",
+    anchor: "argo",
     logo: "/argo.svg",
     video: "/banner-argo.mp4?v=hq",
     poster: "/banner-argo-poster.webp?v=hq",
@@ -61,10 +65,11 @@ const BANNERS: Banner[] = [
   },
   {
     name: "ALL MESSAGE",
+    anchor: "all-message",
     logo: "/allmessage-dark.png",
     logoOriginal: true,
     href: "https://allmessage.chat/",
-    logoScale: 0.84,
+    logoScale: 0.96,
     video: "/banner-allmessage.mp4?v=hq",
     poster: "/banner-allmessage-poster.webp?v=hq",
     tint: "#282a2d",
@@ -77,6 +82,7 @@ const BANNERS: Banner[] = [
   },
   {
     name: "LUVO",
+    anchor: "luvo",
     logo: "/luvo-logo.png?v=2",
     logoScale: 0.62,
     comingSoon: true,
@@ -85,13 +91,14 @@ const BANNERS: Banner[] = [
     tint: "#f5ccc6",
     paras: [
       "LUVO è la piattaforma AI-powered che riunisce conversazioni, campagne, automazioni e dati commerciali in un unico ambiente.",
-      "Permette di gestire WhatsApp, Instagram, Facebook ed e-mail da una sola interfaccia, creare campagne multicanale e configurare agenti AI conversazionali e vocali da utilizzare come assistenti di vendita.",
-      "LUVO può essere collegato direttamente all’e-commerce e agli strumenti di acquisizione lead, come Google Ads e Meta Business Suite. Riunendo questi dati, la piattaforma offre una visione completa delle performance aziendali e un servizio di business intelligence basato su informazioni reali e aggiornate.",
+      "Gestisce WhatsApp, Instagram, Facebook ed e-mail da un’unica interfaccia e consente di creare campagne multicanale e agenti AI conversazionali e vocali per le vendite.",
+      "Collegata a e-commerce, Google Ads e Meta Business Suite, LUVO centralizza i dati e offre una visione completa delle performance aziendali.",
     ],
     facts: ["Mercato: Italia e internazionale", "Industria: E-commerce e retail"],
   },
   {
     name: "Software e AI agent su misura",
+    anchor: "software-ai-su-misura",
     nameScale: 0.42,
     video: "/banner-custom.mp4",
     poster: "/banner-custom-poster.webp",
@@ -116,7 +123,7 @@ export default function Products() {
       <h2 className="products__title">Prodotti</h2>
 
       {BANNERS.map((banner) => (
-        <div className="koreb" key={banner.name}>
+        <div className="koreb" id={banner.anchor} key={banner.name}>
           <h3 className="koreb__kicker">{banner.name}</h3>
 
           <div

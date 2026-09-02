@@ -8,7 +8,6 @@ const NAV = [
   { label: "Prodotti", href: "/#prodotti" },
   { label: "News e Blog", href: "/#news" },
   { label: "Contatti", href: "/#contatti" },
-  { label: "Privacy Policy", href: "/privacy" },
 ];
 
 export default function SiteHeader({

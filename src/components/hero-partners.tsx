@@ -1,10 +1,21 @@
 "use client";
 
+/*
+ * ═══════════════════════════════════════════════════════════════════
+ *  DESIGN CONSERVATO — hero "Partner & Clienti"
+ *  Copia integrale del carosello con le card di partner e clienti
+ *  (Aessefin, Cofidis, Ecommerce Italia, Magenta, ElevenLabs, AWS,
+ *  StarBrixia, Istituto G. B. Montini), con gli stessi video, loghi,
+ *  didascalie Partners/Clienti e stile. Non è montato in nessuna
+ *  pagina: per ripristinarlo, in src/app/page.tsx importare
+ *  HeroPartners da questo file al posto di Hero.
+ * ═══════════════════════════════════════════════════════════════════
+ */
+
 import { useEffect, useRef } from "react";
 
 type Tile = {
   name: string;
-  productHref: string;
   background: string;
   color: string;
   /* logo art replaces the wordmark when present */
@@ -16,14 +27,6 @@ type Tile = {
   sub?: string;
   /* small uppercase line above the name, e.g. "Supported by" */
   kicker?: string;
-  /* long text names wrap over two lines instead of shrinking */
-  nameWrap?: boolean;
-  /* which part of the footage the portrait crop keeps */
-  mediaPos?: string;
-  /* extra zoom, e.g. to push baked-in letterbox bars out of the crop */
-  mediaScale?: number;
-  /* light footage with dark marks reads better without the dark scrim */
-  noScrim?: boolean;
   /* video plays behind the logo / wordmark */
   video?: string;
   poster?: string;
@@ -32,64 +35,79 @@ type Tile = {
 /* Tiles in the 3D row — order runs left to right, then loops. */
 const TILES: Tile[] = [
   {
-    name: "Kore",
-    productHref: "#kore",
-    background: "#c5dcf9",
-    color: "#111111",
-    logo: "/kore.webp",
-    logoScale: 0.58,
-    video: "/banner-kore.mp4",
-    poster: "/banner-kore-poster.webp",
-    mediaPos: "24% 20%",
-    noScrim: true,
-  },
-  {
-    name: "LUVO",
-    productHref: "#luvo",
-    background: "#f5ccc6",
-    color: "#111111",
-    logo: "/luvo-logo.png",
-    logoScale: 0.6,
-    video: "/banner-acta.mp4",
-    poster: "/banner-acta-poster.webp",
-    mediaPos: "10% 50%",
-    noScrim: true,
-  },
-  {
-    name: "All Message",
-    productHref: "#all-message",
-    background: "#282a2d",
+    name: "Aessefin",
+    background: "#f6f6f4",
     color: "#ffffff",
-    logo: "/allmessage-dark.png",
+    logo: "/aessefin.webp",
+    logoScale: 0.58,
+    sub: "Clienti",
+    video: "/aessefin.mp4",
+    poster: "/aessefin-poster.jpg",
+  },
+  {
+    name: "Cofidis",
+    background: "#f6f6f4",
+    color: "#ffffff",
+    logo: "/cofidis.webp",
+    logoScale: 0.56,
+    sub: "Clienti",
+    video: "/cofidis.mp4",
+    poster: "/cofidis-poster.jpg",
+  },
+  {
+    name: "Ecommerce Italia",
+    background: "#f6f6f4",
+    color: "#111111",
+    logo: "/ecommerce-italia.webp",
+    logoScale: 0.74,
+    sub: "Partners",
+  },
+  {
+    name: "Magenta",
+    background: "#e20074",
+    color: "#fff0f8",
+    logo: "/magenta-white.webp",
+    logoScale: 0.6,
+    sub: "Clienti",
+    video: "/magenta.mp4",
+    poster: "/magenta-poster.jpg",
+  },
+  {
+    name: "ElevenLabs",
+    background: "#0a0a0a",
+    color: "#ffffff",
+    kicker: "Supported by",
+    logo: "/elevenlabs-logo.webp",
+    logoScale: 0.72,
+    logoInvert: true,
+    sub: "Partners",
+    video: "/elevenlabs.mp4",
+    poster: "/elevenlabs-poster.jpg",
+  },
+  {
+    name: "AWS",
+    background: "#0a0a0a",
+    color: "#ffffff",
+    logo: "/aws-white.webp",
+    logoScale: 0.4,
+    sub: "Partners",
+  },
+  {
+    name: "StarBrixia",
+    /* the mark ships on an opaque white plate, so the card matches it */
+    background: "#ffffff",
+    color: "#111111",
+    logo: "/starbrixia.webp",
     logoScale: 0.66,
-    video: "/banner-allmessage.mp4",
-    poster: "/banner-allmessage-poster.webp",
-    /* the clip ships with letterbox bars — zoom past them */
-    mediaScale: 1.34,
-    mediaPos: "40% 50%",
+    sub: "Clienti",
   },
   {
-    name: "Argo",
-    productHref: "#argo",
-    background: "#95a086",
+    name: "Istituto G. B. Montini",
+    background: "#f6f6f4",
     color: "#111111",
-    logo: "/argo.svg",
-    logoScale: 0.5,
-    video: "/banner-argo.mp4",
-    poster: "/banner-argo-poster.webp",
-    mediaPos: "12% 50%",
-    noScrim: true,
-  },
-  {
-    name: "Software e AI agent su misura",
-    productHref: "#software-ai-su-misura",
-    background: "#d6e4e3",
-    color: "#111111",
-    nameWrap: true,
-    video: "/banner-custom.mp4",
-    poster: "/banner-custom-poster.webp",
-    mediaPos: "0% 60%",
-    noScrim: true,
+    logo: "/istituto-montini.webp",
+    logoScale: 0.54,
+    sub: "Clienti",
   },
 ];
 
@@ -104,7 +122,7 @@ function nameScale(name: string) {
   return Math.min(0.155, 1.35 / name.length);
 }
 
-export default function Hero() {
+export default function HeroPartners() {
   const stageRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
 
@@ -255,16 +273,14 @@ export default function Hero() {
         </h1>
       </div>
 
-      <div className="hero__stage" ref={stageRef}>
+      <p className="hero__rowLabel">Partner &amp; Clienti</p>
+
+      <div className="hero__stage" ref={stageRef} aria-hidden="true">
         <div className="hero__track" ref={trackRef}>
           {tiles.map((tile, i) => (
-            <a
+            <div
               key={`${tile.name}-${i}`}
-              href={tile.productHref}
-              aria-label={`Vai al prodotto ${tile.name}`}
-              className={`hero__card hero__card--flat${
-                tile.video ? " hero__card--media" : ""
-              }`}
+              className={`hero__card${tile.video ? " hero__card--media" : ""}`}
               style={{ background: tile.background, color: tile.color }}
             >
               {tile.video && (
@@ -278,16 +294,8 @@ export default function Hero() {
                     playsInline
                     preload="metadata"
                     disablePictureInPicture
-                    style={{
-                      ...(tile.mediaPos && {
-                        objectPosition: tile.mediaPos,
-                      }),
-                      ...(tile.mediaScale && {
-                        transform: `scale(${tile.mediaScale})`,
-                      }),
-                    }}
                   />
-                  {!tile.noScrim && <span className="hero__cardScrim" />}
+                  <span className="hero__cardScrim" />
                 </>
               )}
 
@@ -319,20 +327,16 @@ export default function Hero() {
                     <span className="hero__cardKicker">{tile.kicker}</span>
                   )}
                   <span
-                    className={`hero__cardName${
-                      tile.nameWrap ? " hero__cardName--wrap" : ""
-                    }`}
+                    className="hero__cardName"
                     style={{
-                      fontSize: `calc(var(--card-w) * ${
-                        tile.nameWrap ? "0.105" : nameScale(tile.name).toFixed(3)
-                      })`,
+                      fontSize: `calc(var(--card-w) * ${nameScale(tile.name).toFixed(3)})`,
                     }}
                   >
                     {tile.name}
                   </span>
                 </span>
               )}
-            </a>
+            </div>
           ))}
         </div>
       </div>
